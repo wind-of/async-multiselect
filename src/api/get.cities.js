@@ -6,16 +6,17 @@ export function GET_CITIES() {
     if(cachedCities) {
       resolve(cachedCities)
     }
-    const xhr = new XMLHttpRequest()
-    xhr.timeout = 3000;
-    xhr.addEventListener("error", () => reject("NOT_FOUND"))
-    xhr.addEventListener("abort", () => reject("ABORT"))
-    xhr.addEventListener("load", (event) => {
+    const request = new XMLHttpRequest()
+    request.timeout = 3000
+    request.addEventListener("error", () => reject("NOT_FOUND"))
+    request.addEventListener("timeout", request.abort)
+    request.addEventListener("abort", () => reject("ABORT"))
+    request.addEventListener("load", (event) => {
       const cities = JSON.parse(event.currentTarget.response)
       cachedCities = cities
       resolve(cities)
     })
-    xhr.open("GET", url)
-    xhr.send()
+    request.open("GET", url)
+    request.send()
   })
 } 
